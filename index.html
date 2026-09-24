@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="편하게 만나 오래 함께할 수 있는 곳, 테일즈런너 오얏꽃 길드입니다.">
+<meta property="og:title" content="오얏꽃 길드">
+<meta property="og:description" content="편하게 만나 오래 함께할 수 있는 곳, 테일즈런너 오얏꽃 길드입니다.">
+<meta property="og:image" content="guild-mark-v2.png">
+<link rel="icon" href="guild-mark-v2.png">
+<style>img{max-width:100%}[hidden]{display:none!important}</style>
+<title>오얏꽃 길드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Cormorant+Garamond:ital,wght@1,500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --night-top: #0F0C2C;
+    --night-mid: #1F1A52;
+    --night-low: #372568;
+    --ink: #F5EEFF;
+    --ink-soft: #CBBFEA;
+    --blossom: #F6AED0;
+    --blossom-deep: #E07AB0;
+    --violet: #B69CFF;
+    --mint: #9FF2D8;
+    --glass: rgba(34, 24, 78, 0.42);
+    --glass-edge: rgba(230, 210, 255, 0.18);
+    --display: "Gowun Batang", "Nanum Myeongjo", "Apple SD Gothic Neo", serif;
+    --body: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --latin: "Cormorant Garamond", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--night-top);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ---------- night sky, seen from the forest floor ---------- */
+  .sky {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(90% 60% at 50% 0%, #2B226A 0%, transparent 70%),
+      linear-gradient(180deg, var(--night-top) 0%, var(--night-mid) 50%, var(--night-low) 100%);
+  }
+  /* the night-sky photo: flowers and branches framing the milky way, drifting in very slowly */
+  .photo {
+    position: absolute; inset: -3%;
+    background: url("night-sky.webp") center / cover no-repeat;
+    animation: photoDrift 70s ease-in-out infinite alternate;
+  }
+  @keyframes photoDrift { to { transform: scale(1.06) translate(-1%, 1%); } }
+  /* gentle shade behind the text column and toward the bottom, so copy reads over bright flowers */
+  .shade {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 38% 75% at 50% 60%, rgba(12, 9, 36, .5), transparent 75%),
+      linear-gradient(180deg, transparent 45%, rgba(12, 9, 36, .45) 100%);
+  }
+  .sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* a faint moving aurora over the photo's own, just enough to make it breathe */
+  #aurora { filter: blur(18px) saturate(1.1); mix-blend-mode: screen; opacity: .35; }
+  /* soft drifting glow veils beneath the curtains */
+  .veil {
+    position: absolute; border-radius: 50%; filter: blur(80px);
+    mix-blend-mode: screen; opacity: .14;
+    animation: veilDrift 50s ease-in-out infinite alternate;
+  }
+  .veil.v1 { width: 70vmax; height: 26vmax; top: 4vh;  left: -10vw; background: #7FE6CC; }
+  .veil.v2 { width: 60vmax; height: 24vmax; top: 14vh; right: -12vw; background: #F29AC8; animation-duration: 64s; animation-delay: -20s; }
+  .veil.v3 { width: 55vmax; height: 22vmax; top: 30vh; left: 20vw;  background: #9C82F2; animation-duration: 58s; animation-delay: -35s; }
+  @keyframes veilDrift {
+    0%   { transform: translate(0, 0) rotate(-4deg) scale(1); }
+    100% { transform: translate(8vw, 3vh) rotate(5deg) scale(1.12); }
+  }
+
+
+  #sparkle { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+  /* ---------- layout ---------- */
+  .wrap {
+    position: relative; z-index: 2;
+    max-width: 800px; margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 0 72px;
+    text-shadow: 0 2px 18px rgba(8, 5, 30, .65);
+  }
+  nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-block: 22px;
+    text-shadow: 0 0 6px rgba(10, 6, 34, .95), 0 1px 14px rgba(10, 6, 34, .9);
+  }
+  nav .brand svg { filter: drop-shadow(0 0 6px rgba(10, 6, 34, .9)); }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+  .brand svg { width: 28px; height: 28px; }
+  nav ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; }
+  nav a.link { color: var(--ink-soft); text-decoration: none; font-size: 15px; }
+  nav a.link:hover { color: var(--blossom); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding-block: 16px 64px;
+  }
+  .emblem { position: relative; aspect-ratio: 1; width: min(280px, 70vw); max-width: 100%; margin-bottom: 8px; }
+  .emblem .halo {
+    position: absolute; inset: 4%; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 240, 200, .45) 0%, rgba(255, 215, 120, .18) 35%, rgba(150, 120, 255, .12) 58%, transparent 72%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+  .emblem .ring { position: absolute; inset: 0; animation: spin 80s linear infinite; }
+  .emblem .flower { position: absolute; inset: 20%; animation: sway 7s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(255, 240, 210, .55)); }
+  @keyframes breathe { 50% { transform: scale(1.07); opacity: .8; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes sway { 50% { transform: rotate(8deg) scale(1.02); } }
+
+  .eyebrow {
+    font-family: var(--latin); font-style: italic; font-size: 21px;
+    color: var(--violet); letter-spacing: .03em; margin: 0 0 4px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(60px, 12vw, 116px); line-height: 1.02;
+    margin: 0; letter-spacing: -.02em;
+    /* mostly white, with soft lavender drifting through */
+    background: linear-gradient(100deg, #FFFFFF 0%, #F6F1FF 22%, #CDB8FF 42%, #FFFFFF 60%, #F3EDFF 78%, #D4C2FF 100%);
+    background-size: 240% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 10s ease-in-out infinite alternate;
+    text-shadow: none;
+    filter: drop-shadow(0 0 24px rgba(200, 175, 255, .4));
+    text-wrap: balance;
+  }
+  h1 small { display: block; font-size: .34em; letter-spacing: .1em; margin-top: 10px; }
+  @keyframes shimmer { to { background-position: 100% 0; } }
+  .greeting {
+    font-family: var(--display); font-size: clamp(19px, 2.4vw, 23px);
+    margin: 22px auto 26px; color: var(--ink); max-width: 30ch;
+  }
+  .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 30px; padding: 0; list-style: none; }
+  .tags li {
+    font-size: 13.5px; padding: 5px 12px; border-radius: 999px;
+    background: var(--glass); border: 1px solid var(--glass-edge); color: var(--ink-soft);
+    backdrop-filter: blur(8px);
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 26px; border-radius: 999px;
+    background: linear-gradient(120deg, #8C6CF0, #E07AB0);
+    color: #fff; font-family: var(--display); font-weight: 700; font-size: 17px;
+    text-decoration: none; text-shadow: none;
+    box-shadow: 0 0 30px -4px rgba(224, 122, 176, .6), inset 0 1px 0 rgba(255,255,255,.35);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 0 44px -2px rgba(224, 122, 176, .8), inset 0 1px 0 rgba(255,255,255,.35); }
+  .cta:focus-visible, nav a:focus-visible { outline: 3px solid var(--mint); outline-offset: 3px; }
+
+  /* ---------- sections ---------- */
+  section.block { padding-block: 48px; max-width: 680px; margin-inline: auto; }
+  .head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+  h2 {
+    font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 34px); margin: 0; text-wrap: balance;
+    color: #FFFFFF;
+    text-shadow: 0 0 6px rgba(10, 6, 34, .95), 0 2px 18px rgba(10, 6, 34, .9), 0 0 36px rgba(10, 6, 34, .7);
+  }
+  .head .latin {
+    font-family: var(--latin); font-style: italic; font-size: 20px; color: #D9CCFF;
+    text-shadow: 0 0 6px rgba(10, 6, 34, .95), 0 2px 14px rgba(10, 6, 34, .85);
+  }
+
+  .panel {
+    background: rgba(24, 16, 60, 0.66); border: 1px solid var(--glass-edge);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .intro {
+    padding: 34px clamp(22px, 5vw, 44px);
+    border-radius: 26px;
+    font-family: var(--display); font-size: clamp(18px, 2.4vw, 21px); line-height: 1.85;
+  }
+  .intro p { margin: 0; max-width: 40ch; }
+  .intro .sig { display: block; margin-top: 16px; font-size: 15px; font-family: var(--body); color: var(--ink-soft); }
+
+  /* the 길드 소개 / 가입 조건 card grids run 1.3× wider than the 680px column, centred on it */
+  #about, #join {
+    --cards-w: min(884px, calc(100vw - 40px));
+    max-width: none; width: var(--cards-w);
+    margin-inline: calc((100% - var(--cards-w)) / 2);
+  }
+  .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 22px; padding-top: 14px; }
+  /* arched card: illustration on top, title, ornamented rule, centred copy */
+  .term {
+    --arch: 190px 190px 26px 26px / 84px 84px 26px 26px;
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 34px 26px 30px; border-radius: var(--arch);
+    border-color: rgba(240, 214, 150, .35);
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  .term::before {               /* thin gold inner frame */
+    content: ""; position: absolute; inset: 7px; border-radius: var(--arch);
+    border: 1px solid rgba(240, 214, 150, .28); pointer-events: none;
+  }
+  .term::after {                /* star ornament crowning the arch */
+    content: "✦"; position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
+    font-size: 26px; line-height: 1; color: #F4D58E;
+    text-shadow: 0 0 10px rgba(255, 220, 140, .8), 0 0 22px rgba(255, 220, 140, .4);
+  }
+  .term:hover { transform: translateY(-4px); border-color: rgba(240, 214, 150, .6); }
+  .term svg.ic { width: 124px; height: 124px; margin-bottom: 8px; filter: drop-shadow(0 8px 18px rgba(150, 120, 255, .35)); }
+  .term > div { width: 100%; }
+  .term h3 { font-family: var(--display); font-size: 25px; margin: 0; }
+  .term h3 { color: #FFFFFF; }
+  .term .rule {
+    position: relative; display: block; width: 72%; height: 1px; margin: 12px auto 14px;
+    background: linear-gradient(90deg, transparent, rgba(240, 214, 150, .75), transparent);
+  }
+  .term .rule::after {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px;
+    transform: translate(-50%, -50%) rotate(45deg); background: #F4D58E;
+    box-shadow: 0 0 8px rgba(255, 220, 140, .8);
+  }
+  .term p { margin: 0; color: #E2D9F7; font-size: 19.5px; }
+  /* smaller follow-up line under a card's main text (conditions, asides) */
+  .term p.note {
+    margin-top: 10px; padding: 6px 12px; display: inline-block;
+    font-size: 15.5px; line-height: 1.55; color: #D9CCFF;
+    background: rgba(200, 180, 255, .1); border: 1px solid rgba(200, 180, 255, .2); border-radius: 12px;
+  }
+  .intro .sig { color: #D6CCF0; }
+
+  .contact {
+    text-align: center;
+    padding: 52px 24px; border-radius: 30px;
+    background:
+      radial-gradient(80% 120% at 15% 0%, rgba(159, 242, 216, .22), transparent 60%),
+      radial-gradient(80% 120% at 90% 100%, rgba(246, 174, 208, .25), transparent 60%),
+      var(--glass);
+  }
+  .contact h2 { margin-bottom: 10px; }
+  .contact p { margin: 0 auto 26px; color: var(--ink-soft); max-width: 36ch; }
+  .contact .url { display: block; margin-top: 14px; font-size: 13px; color: var(--ink-soft); user-select: all; }
+
+  footer { text-align: center; padding-top: 44px; font-size: 13px; color: var(--ink-soft); }
+  footer .latin { font-family: var(--latin); font-style: italic; font-size: 16px; }
+  /* maker's credit, tucked into the bottom-right corner of the page */
+  .copyright {
+    position: relative; z-index: 2; margin: 0;
+    padding: 0 24px 18px; text-align: center;
+    font-size: 12.5px; letter-spacing: .04em; color: rgba(215, 204, 245, .7);
+    text-shadow: 0 1px 8px rgba(8, 5, 30, .8);
+  }
+
+  @media (max-width: 760px) {
+    nav ul { display: none; }
+    .terms { grid-template-columns: 1fr; }
+    section.block { padding-block: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<!-- shared five-petal plum blossom -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="petalFill" cx="50%" cy="85%" r="85%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="45%" stop-color="#FCD9EA"/>
+      <stop offset="100%" stop-color="#E99AC4"/>
+    </radialGradient>
+    <radialGradient id="heart" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF4D6"/>
+      <stop offset="100%" stop-color="#F7B98E"/>
+    </radialGradient>
+    <!-- guild mark: the guild's own artwork (white five-petal blossom, golden stamens) -->
+    <!-- palette for the card illustrations: moonlit white, lavender, gold (and one red boot) -->
+    <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEDB3"/><stop offset="1" stop-color="#D2A04A"/></linearGradient>
+    <linearGradient id="gLav" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCD0FF"/><stop offset="1" stop-color="#8E76E6"/></linearGradient>
+    <linearGradient id="gLavDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#AE98F7"/><stop offset="1" stop-color="#6650C8"/></linearGradient>
+    <linearGradient id="gWhite" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9D0F4"/></linearGradient>
+    <linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8E9B"/><stop offset="1" stop-color="#C9304E"/></linearGradient>
+    <linearGradient id="gBlade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#E9E4FB"/><stop offset=".51" stop-color="#C3B8EC"/><stop offset="1" stop-color="#DCD4F7"/></linearGradient>
+    <symbol id="spark" viewBox="-10 -10 20 20"><path d="M0-10Q1-1 10 0Q1 1 0 10Q-1 1-10 0Q-1-1 0-10Z" fill="#FFF6D8"/></symbol>
+
+    <!-- 길드 퀘스트: scroll and quill -->
+    <symbol id="ic-quest" viewBox="0 0 120 120">
+      <rect x="30" y="24" width="54" height="64" rx="3" fill="url(#gWhite)"/>
+      <g stroke="#A99CDB" stroke-width="2.6" stroke-linecap="round"><path d="M39 38H74M39 47H70M39 56H75M39 65H64M39 74H71"/></g>
+      <rect x="25" y="15" width="64" height="13" rx="6.5" fill="url(#gGold)"/>
+      <rect x="25" y="84" width="64" height="13" rx="6.5" fill="url(#gGold)"/>
+      <circle cx="25" cy="21.5" r="5" fill="#B98534"/><circle cx="89" cy="21.5" r="5" fill="#B98534"/>
+      <circle cx="25" cy="90.5" r="5" fill="#B98534"/><circle cx="89" cy="90.5" r="5" fill="#B98534"/>
+      <path d="M103 10C86 18 70 44 64 86C74 64 90 44 108 22C106 17 105 13 103 10Z" fill="url(#gLav)"/>
+      <path d="M103 12C88 30 74 56 65 84" stroke="#FFFFFF" stroke-width="1.6" fill="none" opacity=".8"/>
+      <circle cx="80" cy="92" r="9" fill="url(#gLavDeep)"/><use href="#spark" x="74" y="86" width="12" height="12"/>
+      <use href="#spark" x="8" y="44" width="10" height="10"/><use href="#spark" x="96" y="60" width="8" height="8"/>
+    </symbol>
+
+    <!-- 점령전: crossed swords over a pennant -->
+    <symbol id="ic-battle" viewBox="0 0 120 120">
+      <path d="M44 70Q60 60 76 70L72 100L60 92L48 100Z" fill="url(#gLavDeep)" opacity=".9"/>
+      <g transform="rotate(-42 60 62)">
+        <path d="M60 6L66 18L65 74H55L54 18Z" fill="url(#gBlade)"/>
+        <rect x="45" y="74" width="30" height="7" rx="3.5" fill="url(#gGold)"/>
+        <rect x="56.5" y="81" width="7" height="18" rx="2" fill="#5B48B0"/>
+        <circle cx="60" cy="102" r="5" fill="url(#gGold)"/>
+      </g>
+      <g transform="rotate(42 60 62)">
+        <path d="M60 6L66 18L65 74H55L54 18Z" fill="url(#gBlade)"/>
+        <rect x="45" y="74" width="30" height="7" rx="3.5" fill="url(#gGold)"/>
+        <rect x="56.5" y="81" width="7" height="18" rx="2" fill="#5B48B0"/>
+        <circle cx="60" cy="102" r="5" fill="url(#gGold)"/>
+      </g>
+      <use href="#spark" x="52" y="14" width="16" height="16"/><use href="#spark" x="12" y="30" width="9" height="9"/><use href="#spark" x="100" y="34" width="9" height="9"/>
+    </symbol>
+
+    <!-- 주맵: folded map with a dotted route to a golden pin -->
+    <symbol id="ic-map" viewBox="0 0 120 120">
+      <path d="M14 32L42 24L72 32L104 24V92L72 100L42 92L14 100Z" fill="url(#gWhite)"/>
+      <path d="M42 24L72 32V100L42 92Z" fill="#E3DAFA"/>
+      <path d="M26 84C38 62 52 80 62 60S82 44 88 46" stroke="#8C6CF0" stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round" fill="none"/>
+      <path d="M21 79L31 89M31 79L21 89" stroke="#8C6CF0" stroke-width="3" stroke-linecap="round"/>
+      <path d="M88 16C79 16 74 23 74 30C74 40 88 52 88 52S102 40 102 30C102 23 97 16 88 16Z" fill="url(#gGold)"/>
+      <circle cx="88" cy="30" r="5.5" fill="#FFFFFF"/>
+      <use href="#spark" x="102" y="8" width="10" height="10"/><use href="#spark" x="4" y="18" width="9" height="9"/>
+    </symbol>
+
+    <!-- 길드 이벤트: gift box under fireworks -->
+    <symbol id="ic-event" viewBox="0 0 120 120">
+      <g stroke-linecap="round" stroke-width="2.4">
+        <g stroke="#F4D58E"><path d="M30 26V14M30 26L20 18M30 26L40 18M30 26L18 28M30 26L42 28"/></g>
+        <g stroke="#B9A6FF"><path d="M92 24V10M92 24L82 14M92 24L102 14M92 24L80 26M92 24L104 26"/></g>
+      </g>
+      <rect x="26" y="58" width="68" height="44" rx="6" fill="url(#gLavDeep)"/>
+      <rect x="21" y="46" width="78" height="16" rx="5" fill="url(#gLav)"/>
+      <rect x="55" y="46" width="10" height="56" fill="url(#gGold)"/>
+      <path d="M60 46C48 30 32 36 40 46ZM60 46C72 30 88 36 80 46Z" fill="url(#gGold)"/>
+      <circle cx="60" cy="45" r="5" fill="#E7B95A"/>
+      <use href="#spark" x="8" y="60" width="10" height="10"/><use href="#spark" x="102" y="52" width="10" height="10"/><use href="#spark" x="56" y="10" width="9" height="9"/>
+    </symbol>
+
+    <!-- 나이: calendar with an adults-only badge -->
+    <symbol id="ic-age" viewBox="0 0 120 120">
+      <rect x="18" y="26" width="78" height="72" rx="10" fill="url(#gWhite)"/>
+      <path d="M18 36A10 10 0 0 1 28 26H86A10 10 0 0 1 96 36V48H18Z" fill="url(#gLavDeep)"/>
+      <rect x="35" y="16" width="7" height="18" rx="3.5" fill="url(#gGold)"/><rect x="72" y="16" width="7" height="18" rx="3.5" fill="url(#gGold)"/>
+      <g fill="#C8BCEE">
+        <circle cx="32" cy="60" r="4"/><circle cx="47" cy="60" r="4"/><circle cx="62" cy="60" r="4"/><circle cx="77" cy="60" r="4"/>
+        <circle cx="32" cy="74" r="4"/><circle cx="47" cy="74" r="4"/><circle cx="77" cy="74" r="4"/>
+        <circle cx="32" cy="88" r="4"/><circle cx="47" cy="88" r="4"/>
+      </g>
+      <circle cx="62" cy="74" r="6.5" fill="#8C6CF0"/>
+      <circle cx="94" cy="92" r="18" fill="url(#gGold)"/>
+      <text x="94" y="97.5" text-anchor="middle" font-family="Gowun Dodum, sans-serif" font-weight="700" font-size="15" fill="#4A3690">19+</text>
+      <use href="#spark" x="100" y="14" width="10" height="10"/>
+    </symbol>
+
+    <!-- 홀리 윙 부츠: red winged boot under a halo -->
+    <symbol id="ic-boots" viewBox="0 0 120 120">
+      <ellipse cx="62" cy="15" rx="17" ry="5" fill="none" stroke="url(#gGold)" stroke-width="3.5"/>
+      <path d="M46 44C30 34 14 36 8 46C20 46 28 48 34 52C22 52 13 57 10 64C22 61 32 61 40 62C32 64 26 69 24 75C34 71 42 70 48 70Z" fill="url(#gWhite)"/>
+      <path d="M48 30H76V72C76 78 82 80 94 82C104 84 108 92 104 98H42C40 98 38 96 38 93L42 72Z" fill="url(#gRed)"/>
+      <rect x="44" y="25" width="36" height="11" rx="5" fill="url(#gGold)"/>
+      <rect x="36" y="95" width="72" height="7" rx="3.5" fill="#7C2238"/>
+      <path d="M52 40V70" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".45"/>
+      <use href="#spark" x="92" y="40" width="12" height="12"/><use href="#spark" x="16" y="86" width="9" height="9"/>
+    </symbol>
+
+    <!-- 디스코드 및 오픈채팅: headset with mic and a chat bubble -->
+    <symbol id="ic-mic" viewBox="0 0 120 120">
+      <path d="M24 70C24 34 86 34 86 70" stroke="url(#gLav)" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <rect x="14" y="62" width="20" height="30" rx="9" fill="url(#gLavDeep)"/>
+      <rect x="76" y="62" width="20" height="30" rx="9" fill="url(#gLavDeep)"/>
+      <rect x="20" y="67" width="8" height="20" rx="4" fill="#C9BCFF"/>
+      <rect x="82" y="67" width="8" height="20" rx="4" fill="#C9BCFF"/>
+      <path d="M24 90C26 104 40 108 52 106" stroke="url(#gGold)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <rect x="50" y="100" width="14" height="10" rx="5" fill="url(#gGold)"/>
+      <path d="M84 10H108A8 8 0 0 1 116 18V32A8 8 0 0 1 108 40H98L90 48V40H84A8 8 0 0 1 76 32V18A8 8 0 0 1 84 10Z" fill="url(#gWhite)"/>
+      <g fill="#8C6CF0"><circle cx="87" cy="25" r="3"/><circle cx="96" cy="25" r="3"/><circle cx="105" cy="25" r="3"/></g>
+      <use href="#spark" x="8" y="22" width="10" height="10"/>
+    </symbol>
+
+    <!-- 원활한 소통: two speech bubbles and a heart -->
+    <symbol id="ic-talk" viewBox="0 0 120 120">
+      <path d="M32 20H70A18 18 0 0 1 88 38V48A18 18 0 0 1 70 66H40L26 78V64A18 18 0 0 1 14 48V38A18 18 0 0 1 32 20Z" fill="url(#gWhite)"/>
+      <g fill="#A99CDB"><circle cx="38" cy="43" r="4"/><circle cx="51" cy="43" r="4"/><circle cx="64" cy="43" r="4"/></g>
+      <path d="M58 52H90A16 16 0 0 1 106 68V78A16 16 0 0 1 90 94V106L78 94H58A16 16 0 0 1 42 78V68A16 16 0 0 1 58 52Z" fill="url(#gLavDeep)"/>
+      <path d="M74 86C62 78 62 68 68 66C71 65 73 67 74 69C75 67 77 65 80 66C86 68 86 78 74 86Z" fill="url(#gGold)"/>
+      <use href="#spark" x="96" y="18" width="11" height="11"/><use href="#spark" x="8" y="88" width="9" height="9"/>
+    </symbol>
+
+    <symbol id="blossom" viewBox="-50 -50 100 100">
+      <image href="guild-mark-v2.png" x="-50" y="-50" width="100" height="100"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="sky" aria-hidden="true">
+  <div class="photo"></div>
+  <div class="veil v1"></div><div class="veil v2"></div><div class="veil v3"></div>
+  <canvas id="aurora"></canvas>
+  <canvas id="stars"></canvas>
+  <div class="shade"></div>
+</div>
+<canvas id="sparkle" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#top"><svg><use href="#blossom"/></svg>오얏꽃</a>
+    <ul>
+      <li><a class="link" href="#about">길드 소개</a></li>
+      <li><a class="link" href="#join">가입 조건</a></li>
+      <li><a class="link" href="#contact">가입 문의</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="emblem" aria-hidden="true">
+      <div class="halo"></div>
+      <svg class="ring" viewBox="0 0 200 200">
+        <defs><path id="circ" d="M100,100 m-86,0 a86,86 0 1,1 172,0 a86,86 0 1,1 -172,0"/></defs>
+        <circle cx="100" cy="100" r="94" fill="none" stroke="#E8DAFF" stroke-opacity=".45" stroke-width=".6" stroke-dasharray="1 4"/>
+        <text font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-size="11" fill="#CDB8FF" letter-spacing="3.2">
+          <textPath href="#circ">OYATKKOT · PLUM BLOSSOM GUILD · TALESRUNNER ·</textPath>
+        </text>
+      </svg>
+      <svg class="flower" viewBox="0 0 100 100"><use href="#blossom" x="0" y="0" width="100" height="100"/></svg>
+    </div>
+    <p class="eyebrow">Since 2026</p>
+    <h1>오얏꽃</h1>
+    <p class="greeting">편하게 만나 오래 함께할 수 있는 곳,<br>오얏꽃 길드입니다.</p>
+    <ul class="tags">
+      <li>#테일즈런너</li><li>#친목길드</li><li>#뉴비환영</li><li>#길드이벤트</li>
+    </ul>
+    <a class="cta" href="https://open.kakao.com/o/gfuBr8Oi" target="_blank" rel="noopener">
+      <img src="kakaotalk.png" width="22" height="22" alt="" style="border-radius: 6px; display: block;">
+      오픈채팅 가입 문의
+    </a>
+  </header>
+
+  <section class="block" id="about">
+    <div class="head"><h2>길드 소개</h2><span class="latin">about us</span></div>
+    <div class="terms">
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-quest"/></svg>
+        <div><h3>길드 퀘스트</h3><span class="rule"></span><p>매일 22시 / 00시 10분 진행</p><p class="note">1인 퀘스트 기준 주 3회 또는<br>올클 기준 1회 이상 필수</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-battle"/></svg>
+        <div><h3>점령전</h3><span class="rule"></span><p>누구든지 투표 후<br>자유롭게 참여 가능</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-map"/></svg>
+        <div><h3>주맵</h3><span class="rule"></span><p>이벤트, 종랜, 하드코어 등</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-event"/></svg>
+        <div><h3>길드 이벤트</h3><span class="rule"></span><p>주기적으로 열리는<br>오얏꽃 이벤트 (통큰이벤트)</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="join">
+    <div class="head"><h2>가입 조건</h2><span class="latin">before you join</span></div>
+    <div class="terms">
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-age"/></svg>
+        <div><h3>07 ~ 95년생</h3><span class="rule"></span><p>오얏꽃은 성인 친목 길드입니다.<br>성인만 가입 가능합니다.</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><image href="holy-wing-red.png" x="8" y="18" width="104" height="84" preserveAspectRatio="xMidYMid meet" style="image-rendering: pixelated"/></svg>
+        <div><h3>빨간색 홀리 윙 부츠 이상</h3><span class="rule"></span><p>복귀 유저 및 초보 환영<br>(갤럭시 이상은 문의 바랍니다)</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-mic"/></svg>
+        <div><h3>디스코드 및 오픈채팅</h3><span class="rule"></span><p>마이크 필수입니다.<br>디스코드와 오픈채팅 모두<br>활동해야 합니다.</p></div>
+      </article>
+      <article class="term panel">
+        <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-talk"/></svg>
+        <div><h3>원활한 소통</h3><span class="rule"></span><p>신입 분들이 원활하게 적응할 수 있도록<br>도움을 드립니다.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="contact panel">
+      <h2>가입 &amp; 기타 문의</h2>
+      <p>입장방에서 가볍게 이야기 나눈 뒤,<br>본 카톡방으로 안내해 드려요.</p>
+      <a class="cta" href="https://open.kakao.com/o/gfuBr8Oi" target="_blank" rel="noopener">
+        <img src="kakaotalk.png" width="22" height="22" alt="" style="border-radius: 6px; display: block;">
+        오픈채팅 가입 문의
+      </a>
+    </div>
+  </section>
+
+  <footer><span class="latin">Oyatkkot</span> · 오얏꽃 길드 · 테일즈런너</footer>
+</div>
+<p class="copyright">© Made by 앤미 &amp; 김창현</p>
+
+<script>
+/* ---------- foliage regions in the background photo, where fireflies drift and leaves blow from ----------
+   (normalized to the viewport: left canopy, right canopy, top corners, the treetops along the bottom) */
+window.__crowns = [
+  { x: .12, y: .5,  rx: .15, ry: .4 },
+  { x: .92, y: .5,  rx: .1,  ry: .36 },
+  { x: .2,  y: .08, rx: .18, ry: .1 },
+  { x: .8,  y: .08, rx: .14, ry: .1 },
+  { x: .5,  y: .93, rx: .28, ry: .08 }
+];
+
+/* ---------- aurora, stars, falling petals & star dust, fireflies ---------- */
+(function () {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cs = document.getElementById('stars'), xs = cs.getContext('2d');
+  const ca = document.getElementById('aurora'), xa = ca.getContext('2d');
+  const cf = document.getElementById('sparkle'), xf = cf.getContext('2d');
+  const AS = 4; // aurora canvas renders at 1/4 size, then blurs
+  let W, H, dpr, t = 0, stars = [], glints = [], petals = [], dust = [], flies = [], papers = [], treeGlints = [], bandGlow = [], shots = [null, null, null], shotTimers = [120, 330, 560];
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+
+  // aurora ribbons in normalized coordinates; each curtain hangs from a bright lower edge
+  const ribbons = [
+    { y: .30, amp: .05, f: .7, sp: .0016, L: .34, c0: [150, 245, 220], c1: [130, 110, 250] },
+    { y: .20, amp: .04, f: .9, sp: -.0012, L: .26, c0: [255, 175, 220], c1: [170, 120, 250] },
+    { y: .42, amp: .05, f: .5, sp: .001, L: .30, c0: [190, 165, 255], c1: [120, 190, 250] }
+  ];
+  // slow, broad undulation only: no fast ripples
+  const ribbonY = (rb, x, tt) =>
+    rb.y + rb.amp * Math.sin(x * rb.f * 6.283 + tt * rb.sp) +
+    rb.amp * .4 * Math.sin(x * rb.f * 11 - tt * rb.sp * .7) +
+    .1 * Math.pow((x - .5) * 2, 2);
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    for (const [c, s] of [[cs, dpr], [cf, dpr]]) { c.width = W * s; c.height = H * s; }
+    cf.style.width = W + 'px'; cf.style.height = H + 'px';
+    ca.width = Math.ceil(W / AS); ca.height = Math.ceil(H / AS);
+    xs.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(W * H / 5000);
+    // twinkling stars over the photo's milky way (it runs diagonally from upper left to lower right)
+    const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+    stars = Array.from({ length: Math.round(n * .6) }, () => {
+      const t = Math.random(), off = gauss() * H * .12;
+      return { x: W * (.38 + .36 * t) + off * .5, y: H * (.08 + .6 * t) + off, r: Math.random() * 1.1 + .4, p: Math.random() * 6.28, s: Math.random() * .04 + .01, col: pick(['#FFFFFF', '#FFFFFF', '#E6DDFF', '#FFE2F1', '#DDFBF3']) };
+    });
+    bandGlow = [];
+    glints = Array.from({ length: Math.round(n / 9) }, () => ({ x: W * (.25 + Math.random() * .5), y: Math.random() * H * .7, r: Math.random() * 1.8 + 1.3, p: Math.random() * 6.28, s: Math.random() * .015 + .006 }));
+    flies = Array.from({ length: Math.max(14, Math.round(W / 40)) }, newFly);
+    treeGlints = Array.from({ length: crowns().length * 22 }, newTreeGlint);
+  }
+
+  function spawnFromAurora(kind) {
+    const rb = pick(ribbons), xn = .22 + Math.random() * .56;
+    const y = ribbonY(rb, xn, t) * H;
+    if (kind === 'petal') return { x: xn * W, y, s: Math.random() * 4 + 4, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .04, flip: Math.random() * 6.28, vy: Math.random() * .5 + .45, sw: Math.random() * 6.28, col: pick(['#FFC4DF', '#F7A8CE', '#FFDDEE', '#E9C6FF']), age: 0 };
+    return { x: xn * W, y, r: Math.random() * 1.2 + .6, vy: Math.random() * .6 + .35, p: Math.random() * 6.28, col: pick(['#FFFFFF', '#C8FFEE', '#FFD6EC', '#FFF1B8', '#DCCBFF']), age: 0 };
+  }
+  // fireflies drift in and around the tree crowns
+  const crowns = () => window.__crowns && window.__crowns.length ? window.__crowns : [{ x: .1, y: .4, rx: .2, ry: .15 }, { x: .9, y: .4, rx: .2, ry: .15 }];
+  function inCrown(spread) {
+    const c = pick(crowns()), a = Math.random() * 6.283, d = Math.sqrt(Math.random()) * spread;
+    return [(c.x + Math.cos(a) * c.rx * d) * W, (c.y + Math.sin(a) * c.ry * d) * H];
+  }
+  // faint glints that bloom and fade slowly on the paper leaves
+  function newTreeGlint() {
+    const [x, y] = inCrown(.95);
+    return { x, y, r: Math.random() * 1 + 1.1, p: Math.random() * 6.28, s: .008 + Math.random() * .01 };
+  }
+  function newFly() {
+    const [x, y] = inCrown(1.25);
+    return { hx: x, hy: y, x, y: 0, a: Math.random() * 6.28, ra: 15 + Math.random() * 40, sp: (Math.random() * .6 + .3) * (Math.random() < .5 ? -1 : 1), blink: Math.random() * 6.28, bs: Math.random() * .03 + .015, r: Math.random() * 1.4 + 1.4, col: pick(['#F4FFA8', '#FFE9A0', '#D6FFB8']) };
+  }
+
+  function glow(ctx, x, y, r, col, a, k) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * k);
+    g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = a * .7; ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r * k, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = a; ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+  }
+  function cross(ctx, x, y, r, a) {
+    const L = r * 5;
+    glow(ctx, x, y, r * .6, '#FFFFFF', a, 8);
+    ctx.globalAlpha = a; ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.moveTo(x, y - L); ctx.quadraticCurveTo(x, y, x + L, y); ctx.quadraticCurveTo(x, y, x, y + L);
+    ctx.quadraticCurveTo(x, y, x - L, y); ctx.quadraticCurveTo(x, y, x, y - L); ctx.fill();
+  }
+
+  function drawAurora() {
+    const aw = ca.width, ah = ca.height;
+    xa.setTransform(1, 0, 0, 1, 0, 0);
+    xa.clearRect(0, 0, aw, ah);
+    xa.globalCompositeOperation = 'lighter';
+    for (const rb of ribbons) {
+      const Lb = rb.L * ah;
+      const g = xa.createLinearGradient(0, 0, 0, -Lb);
+      const [a, b] = [rb.c0, rb.c1];
+      g.addColorStop(0, `rgba(${a},0)`);
+      g.addColorStop(.04, `rgba(${a},.95)`);
+      g.addColorStop(.25, `rgba(${a},.45)`);
+      g.addColorStop(.6, `rgba(${b},.25)`);
+      g.addColorStop(1, `rgba(${b},0)`);
+      xa.fillStyle = g;
+      for (let px = 0; px < aw; px++) {
+        const xn = px / aw;
+        const y = ribbonY(rb, xn, t) * ah;
+        const len = .72 + .28 * Math.sin(xn * 4 + t * .0022 + rb.y * 10);
+        const edge = Math.min(1, xn * 4, (1 - xn) * 4);
+        xa.globalAlpha = Math.max(0, (.55 + .35 * Math.sin(xn * 3 - t * .0018 + rb.f)) * edge);
+        xa.setTransform(1, 0, 0, Math.max(.2, len), px, y);
+        xa.fillRect(0, -Lb, 1.2, Lb);
+      }
+    }
+    xa.setTransform(1, 0, 0, 1, 0, 0);
+    xa.globalAlpha = 1;
+    xa.globalCompositeOperation = 'source-over';
+  }
+
+  function frame() {
+    t++;
+    // background stars
+    xs.clearRect(0, 0, W, H);
+    for (const b of bandGlow) {
+      b.p += .004;
+      const g = xs.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      g.addColorStop(0, `rgba(215,200,255,${.16 + Math.sin(b.p) * .04})`); g.addColorStop(1, 'rgba(215,200,255,0)');
+      xs.globalAlpha = 1; xs.fillStyle = g; xs.beginPath(); xs.arc(b.x, b.y, b.r, 0, 6.283); xs.fill();
+    }
+    for (const s of stars) { s.p += s.s; const a = .5 + Math.sin(s.p) * .45; if (a > .03) { xs.globalAlpha = a; xs.fillStyle = s.col; xs.beginPath(); xs.arc(s.x, s.y, s.r, 0, 6.283); xs.fill(); } }
+    for (const g of glints) { g.p += g.s; const a = Math.pow(Math.max(0, Math.sin(g.p)), 4); if (a > .03) cross(xs, g.x, g.y, g.r, a); }
+    // shooting stars: three independent streaks, each on its own irregular timer
+    for (let k = 0; k < shots.length; k++) {
+      if (!shots[k]) {
+        if (--shotTimers[k] > 0) continue;
+        const dir = Math.random() < .7 ? 1 : -1;
+        shots[k] = { x: W * (dir > 0 ? .15 + Math.random() * .45 : .45 + Math.random() * .45), y: H * (.04 + Math.random() * .3), vx: dir * (7 + Math.random() * 4), vy: 2.5 + Math.random() * 1.8, life: 0 };
+      }
+      const s = shots[k]; s.life++; s.x += s.vx; s.y += s.vy;
+      const a = Math.sin(Math.min(1, s.life / 50) * Math.PI);
+      const tail = xs.createLinearGradient(s.x, s.y, s.x - s.vx * 16, s.y - s.vy * 16);
+      tail.addColorStop(0, `rgba(255,255,255,${a})`); tail.addColorStop(1, 'rgba(200,180,255,0)');
+      xs.globalAlpha = 1; xs.strokeStyle = tail; xs.lineWidth = 1.8; xs.lineCap = 'round';
+      xs.beginPath(); xs.moveTo(s.x, s.y); xs.lineTo(s.x - s.vx * 16, s.y - s.vy * 16); xs.stroke();
+      if (s.life > 50) { shots[k] = null; shotTimers[k] = 240 + Math.random() * 360; }
+    }
+
+    drawAurora();
+
+    // foreground: petals and star dust falling from the aurora, fireflies by the trees
+    xf.setTransform(dpr, 0, 0, dpr, 0, 0);
+    xf.clearRect(0, 0, W, H);
+    const maxP = Math.round(W / 22), maxD = Math.round(W / 9);
+    if (dust.length < maxD && Math.random() < .9) dust.push(spawnFromAurora('dust'));
+
+    for (let i = dust.length - 1; i >= 0; i--) {
+      const d = dust[i]; d.age++; d.y += d.vy; d.p += .12; d.x += Math.sin(d.p * .2) * .15;
+      const a = Math.min(1, d.age / 30) * (.55 + .45 * Math.sin(d.p)) * Math.max(0, 1 - d.y / H);
+      if (d.y > H || a <= 0 && d.age > 30) { dust.splice(i, 1); continue; }
+      const tr = xf.createLinearGradient(d.x, d.y, d.x, d.y - d.vy * 14);
+      tr.addColorStop(0, d.col); tr.addColorStop(1, 'rgba(0,0,0,0)');
+      xf.globalAlpha = a * .6; xf.strokeStyle = tr; xf.lineWidth = d.r;
+      xf.beginPath(); xf.moveTo(d.x, d.y); xf.lineTo(d.x, d.y - d.vy * 14); xf.stroke();
+      glow(xf, d.x, d.y, d.r, d.col, a, 4);
+    }
+    for (let i = petals.length - 1; i >= 0; i--) {
+      const p = petals[i]; p.age++; p.y += p.vy; p.sw += .015; p.x += Math.sin(p.sw) * .7; p.rot += p.vr; p.flip += .04;
+      if (p.y > H + 20) { petals.splice(i, 1); continue; }
+      xf.save(); xf.translate(p.x, p.y); xf.rotate(p.rot); xf.scale(Math.cos(p.flip), 1);
+      xf.globalAlpha = Math.min(1, p.age / 40) * .9;
+      xf.shadowColor = 'rgba(255,170,215,.8)'; xf.shadowBlur = 8;
+      xf.fillStyle = p.col;
+      xf.beginPath();
+      xf.moveTo(0, -p.s); xf.bezierCurveTo(p.s * .9, -p.s * .6, p.s * .7, p.s * .8, 0, p.s);
+      xf.bezierCurveTo(-p.s * .7, p.s * .8, -p.s * .9, -p.s * .6, 0, -p.s); xf.fill();
+      xf.restore();
+    }
+    for (let i = 0; i < treeGlints.length; i++) {
+      const g = treeGlints[i]; g.p += g.s;
+      if (g.p > 6.283) { treeGlints[i] = newTreeGlint(); treeGlints[i].p = 0; continue; }
+      const a = Math.pow(Math.max(0, Math.sin(g.p)), 3);
+      if (a > .02) cross(xf, g.x, g.y, g.r, a);
+    }
+    // paper leaves slipping off the white trees and tumbling on the breeze
+    if (papers.length < Math.round(W / 16) && Math.random() < .35) {
+      const [x, y] = inCrown(1);
+      papers.push({ x, y, s: Math.random() * 3.5 + 5, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .05, flip: Math.random() * 6.28, vf: .03 + Math.random() * .04, vx: (x < W / 2 ? 1 : -1) * (.4 + Math.random() * .7), vy: .35 + Math.random() * .45, sw: Math.random() * 6.28, age: 0 });
+    }
+    for (let i = papers.length - 1; i >= 0; i--) {
+      const p = papers[i]; p.age++; p.sw += .02;
+      p.x += p.vx + Math.sin(p.sw) * .6; p.y += p.vy; p.rot += p.vr; p.flip += p.vf;
+      if (p.y > H + 20 || p.x < -20 || p.x > W + 20) { papers.splice(i, 1); continue; }
+      const face = Math.cos(p.flip), shade = 200 + Math.round(55 * Math.abs(face));
+      xf.save(); xf.translate(p.x, p.y); xf.rotate(p.rot); xf.scale(face, 1);
+      xf.globalAlpha = Math.min(1, p.age / 30) * .95;
+      xf.shadowColor = 'rgba(210,200,255,.7)'; xf.shadowBlur = 6;
+      xf.fillStyle = `rgb(${shade - 12},${shade - 8},${shade})`;
+      xf.beginPath(); xf.moveTo(-p.s, 0); xf.quadraticCurveTo(0, -p.s * .5, p.s, 0); xf.quadraticCurveTo(0, p.s * .5, -p.s, 0); xf.fill();
+      xf.restore();
+    }
+    for (const f of flies) {
+      f.a += .004 * f.sp; f.blink += f.bs;
+      f.x = f.hx + Math.cos(f.a) * f.ra + Math.sin(f.a * 3.1) * 12;
+      f.y = f.hy + Math.sin(f.a * 1.3) * f.ra * .7 + Math.cos(f.a * 2.3) * 10;
+      const a = Math.pow(Math.max(0, Math.sin(f.blink)), 2) * .95 + .05;
+      glow(xf, f.x, f.y, f.r, f.col, a, 7);
+    }
+    xf.globalAlpha = 1;
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  addEventListener('resize', resize);
+  resize();
+  if (reduce) { for (let k = 0; k < 200; k++) { dust.push(spawnFromAurora('dust')); } }
+  frame();
+})();
+</script>
+
+</body>
+</html>
