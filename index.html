@@ -32,6 +32,8 @@
     --latin: "Cormorant Garamond", Georgia, serif;
   }
   * { box-sizing: border-box; }
+  /* stop in-app browsers (KakaoTalk, iOS) from auto-enlarging text */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     margin: 0;
     background: var(--night-top);
@@ -234,6 +236,40 @@
   }
   .intro .sig { color: #D6CCF0; }
 
+  /* 길드 퀘스트 → guild-skill screenshots popup (hover on desktop, tap on phones) */
+  .term.has-pop { cursor: pointer; }
+  .pop-hint {
+    /* own line, clearly separated from the note box above it */
+    display: block; width: fit-content; margin: 22px auto 0; padding: 6px 16px; border-radius: 999px;
+    font-size: 14px; color: #F4D58E; border: 1px solid rgba(244, 213, 142, .5);
+    background: rgba(244, 213, 142, .08);
+  }
+  .pop-hint::after { content: " ›"; }
+  .skill-pop {
+    position: fixed; inset: 0; z-index: 50;
+    display: grid; place-items: center; padding: 16px;
+    pointer-events: none; opacity: 0; transition: opacity .22s ease;
+  }
+  .skill-pop.open { opacity: 1; }
+  .skill-pop.modal { pointer-events: auto; background: rgba(8, 5, 30, .6); }
+  .skill-pop .pop-card {
+    width: min(980px, 100%); max-height: calc(100% - 8px); overflow: auto;
+    padding: 18px 18px 20px; border-radius: 22px;
+    background: rgba(24, 16, 60, .92); border: 1px solid rgba(240, 214, 150, .45);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5), 0 0 40px rgba(150, 120, 255, .25);
+    transform: translateY(8px) scale(.98); transition: transform .22s ease;
+  }
+  .skill-pop.open .pop-card { transform: none; }
+  .pop-title { margin: 0 0 12px; text-align: center; font-family: var(--display); font-weight: 700; font-size: 20px; color: #FFFFFF; }
+  .pop-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pop-imgs img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .pop-close { display: none; margin: 14px auto 0; padding: 8px 22px; border-radius: 999px; border: 1px solid var(--glass-edge); background: rgba(255,255,255,.08); color: #fff; font: inherit; cursor: pointer; }
+  .skill-pop.modal .pop-close { display: block; }
+  @media (max-width: 760px) { .pop-imgs { grid-template-columns: 1fr; } }
+  /* single-image popup (점령전 투표): narrower card, one column */
+  .skill-pop .pop-card.single { width: min(560px, 100%); }
+  .pop-card.single .pop-imgs { grid-template-columns: 1fr; }
+
   .contact {
     text-align: center;
     padding: 52px 24px; border-radius: 30px;
@@ -259,6 +295,8 @@
   @media (max-width: 760px) {
     nav ul { display: none; }
     .terms { grid-template-columns: 1fr; }
+    /* gentler arch on phone-width cards so the corners don't squash */
+    .term { --arch: 150px 150px 22px 22px / 64px 64px 22px 22px; padding: 30px 20px 26px; }
     section.block { padding-block: 32px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -448,13 +486,13 @@
   <section class="block" id="about">
     <div class="head"><h2>길드 소개</h2><span class="latin">about us</span></div>
     <div class="terms">
-      <article class="term panel">
+      <article class="term panel has-pop" id="questCard" tabindex="0" aria-controls="skillPop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-quest"/></svg>
-        <div><h3>길드 퀘스트</h3><span class="rule"></span><p>매일 22시 / 00시 10분 진행</p><p class="note">1인 퀘스트 기준 주 3회 또는<br>올클 기준 1회 이상 필수</p></div>
+        <div><h3>길드 퀘스트</h3><span class="rule"></span><p>매일 22시 / 00시 10분 진행</p><p class="note">1인 퀘스트 기준 주 3회 또는<br>올클 기준 1회 이상 필수</p><span class="pop-hint">길드 스킬 현황 보기</span></div>
       </article>
-      <article class="term panel">
+      <article class="term panel has-pop" id="warCard" tabindex="0" aria-controls="votePop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-battle"/></svg>
-        <div><h3>점령전</h3><span class="rule"></span><p>누구든지 투표 후<br>자유롭게 참여 가능</p></div>
+        <div><h3>점령전</h3><span class="rule"></span><p>누구든지 투표 후<br>자유롭게 참여 가능</p><span class="pop-hint">투표</span></div>
       </article>
       <article class="term panel">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-map"/></svg>
@@ -502,6 +540,25 @@
 
   <footer><span class="latin">Oyatkkot</span> · 오얏꽃 길드 · 테일즈런너</footer>
 </div>
+<div class="skill-pop" id="votePop" hidden role="dialog" aria-label="점령전 투표">
+  <div class="pop-card single">
+    <p class="pop-title">점령전 투표</p>
+    <div class="pop-imgs">
+      <img src="war-vote.png" alt="점령전 참여 조사 투표 예시: 앞탐, 뒷탐, 대타 중 선택" width="358" height="186">
+    </div>
+    <button class="pop-close" type="button">닫기</button>
+  </div>
+</div>
+<div class="skill-pop" id="skillPop" hidden role="dialog" aria-label="길드 스킬 현황">
+  <div class="pop-card">
+    <p class="pop-title">길드 스킬 현황</p>
+    <div class="pop-imgs">
+      <img src="guild-skill-1.png" alt="길드 스킬 - 달리기 트리" width="720" height="555">
+      <img src="guild-skill-2.png" alt="길드 스킬 - 협동 트리" width="720" height="555">
+    </div>
+    <button class="pop-close" type="button">닫기</button>
+  </div>
+</div>
 <p class="copyright">© Made by 앤미 &amp; 김창현</p>
 
 <script>
@@ -541,7 +598,7 @@ window.__crowns = [
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = innerWidth; H = innerHeight;
     for (const [c, s] of [[cs, dpr], [cf, dpr]]) { c.width = W * s; c.height = H * s; }
-    cf.style.width = W + 'px'; cf.style.height = H + 'px';
+    cf.style.width = '100%'; cf.style.height = '100%';
     ca.width = Math.ceil(W / AS); ca.height = Math.ceil(H / AS);
     xs.setTransform(dpr, 0, 0, dpr, 0, 0);
     const n = Math.round(W * H / 5000);
@@ -717,11 +774,48 @@ window.__crowns = [
     xf.globalAlpha = 1;
     if (!reduce) requestAnimationFrame(frame);
   }
-  addEventListener('resize', resize);
+  // On phones the address bar shows/hides while scrolling, which fires resize with only a small
+  // height change. Rebuilding the effects then makes the background jump, so ignore those.
+  let lastW = innerWidth, lastH = innerHeight;
+  addEventListener('resize', () => {
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160) return;
+    lastW = innerWidth; lastH = innerHeight;
+    resize();
+  });
   resize();
   if (reduce) { for (let k = 0; k < 200; k++) { dust.push(spawnFromAurora('dust')); } }
   frame();
 })();
+
+/* ---------- cards with a popup (길드 퀘스트 → 길드 스킬, 점령전 → 투표) ---------- */
+const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+document.querySelectorAll('.term.has-pop').forEach(card => {
+  const pop = document.getElementById(card.getAttribute('aria-controls'));
+  if (!pop) return;
+  let hideTimer;
+  function show(modal) {
+    clearTimeout(hideTimer);
+    pop.hidden = false;
+    pop.classList.toggle('modal', !!modal);
+    void pop.offsetWidth;          // commit the unhidden state so the fade-in runs
+    pop.classList.add('open');
+    card.setAttribute('aria-expanded', 'true');
+  }
+  function hide() {
+    pop.classList.remove('open');
+    card.setAttribute('aria-expanded', 'false');
+    hideTimer = setTimeout(() => { pop.hidden = true; pop.classList.remove('modal'); }, 230);
+  }
+  if (canHover) {
+    card.addEventListener('mouseenter', () => { if (!pop.classList.contains('modal')) show(false); });
+    card.addEventListener('mouseleave', () => { if (!pop.classList.contains('modal')) hide(); });
+  }
+  // tap (phones) or click/Enter: open as a dismissible popup
+  card.addEventListener('click', () => show(true));
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(true); } });
+  pop.addEventListener('click', hide);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !pop.hidden) hide(); });
+});
 </script>
 
 </body>
