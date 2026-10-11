@@ -176,6 +176,11 @@
     font-family: var(--latin); font-style: italic; font-size: 20px; color: #D9CCFF;
     text-shadow: 0 0 6px rgba(10, 6, 34, .95), 0 2px 14px rgba(10, 6, 34, .85);
   }
+  /* short lead copy between a section title and its cards */
+  .sec-lead { margin: -6px 0 30px; text-shadow: 0 0 6px rgba(10, 6, 34, .95), 0 2px 14px rgba(10, 6, 34, .85); }
+  .sec-lead p { margin: 0; font-size: 17px; line-height: 1.75; color: #E2D9F7; }
+  .sec-lead .lead-main { margin-bottom: 6px; font-family: var(--display); font-weight: 700; font-size: 21px; color: #FFFFFF; }
+  .sec-lead .lead-decline strong { color: #F4D58E; font-weight: 700; }
 
   .panel {
     background: rgba(24, 16, 60, 0.66); border: 1px solid var(--glass-edge);
@@ -268,7 +273,9 @@
   .skill-pop.modal .pop-close { display: block; }
   @media (max-width: 760px) { .pop-imgs { grid-template-columns: 1fr; } }
   /* single-image popup (점령전 투표): narrower card, one column */
-  .skill-pop .pop-card.single { width: min(560px, 100%); }
+  .skill-pop .pop-card.single { width: min(420px, 100%); }
+  .skill-pop .pop-card.single.square { width: min(640px, 100%); }
+  .pop-caption { margin: 12px 0 0; text-align: center; font-size: 15px; color: #F4D58E; }
   .pop-card.single .pop-imgs { grid-template-columns: 1fr; }
 
   .contact {
@@ -476,7 +483,7 @@
     <h1>오얏꽃</h1>
     <p class="greeting">편하게 만나 오래 함께할 수 있는 곳,<br>오얏꽃 길드입니다.</p>
     <ul class="tags">
-      <li>#테일즈런너</li><li>#친목길드</li><li>#뉴비환영</li><li>#길드이벤트</li>
+      <li>#테일즈런너</li><li>#종랜&amp;하코</li><li>#친목길드</li><li>#뉴비환영</li><li>#길드이벤트</li>
     </ul>
     <a class="cta" href="https://open.kakao.com/o/gfuBr8Oi" target="_blank" rel="noopener">
       <img src="kakaotalk.png" width="22" height="22" alt="" style="border-radius: 6px; display: block;">
@@ -486,6 +493,10 @@
 
   <section class="block" id="about">
     <div class="head"><h2>길드 소개</h2><span class="latin">about us</span></div>
+    <div class="sec-lead">
+      <p class="lead-main">종랜 &amp; 하코 즐겜 성인 친목길드입니다.</p>
+      <p>길드원들과 함께 게임하고 싶은 분, 스트레스받지 않고 즐겁게 하고 싶은 분,<br>조금이라도 실력을 늘리고 싶으신 분 등을 환영합니다!</p>
+    </div>
     <div class="terms">
       <article class="term panel has-pop" id="questCard" tabindex="0" aria-controls="skillPop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-quest"/></svg>
@@ -497,17 +508,20 @@
       </article>
       <article class="term panel">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-map"/></svg>
-        <div><h3>주맵</h3><span class="rule"></span><p>이벤트, 종랜, 하드코어 등</p></div>
+        <div><h3>주맵</h3><span class="rule"></span><p>종랜 &amp; 하드코어</p></div>
       </article>
-      <article class="term panel">
+      <article class="term panel has-pop" id="eventCard" tabindex="0" aria-controls="eventPop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-event"/></svg>
-        <div><h3>길드 이벤트</h3><span class="rule"></span><p>주기적으로 열리는<br>오얏꽃 이벤트 (통큰이벤트)</p></div>
+        <div><h3>길드 이벤트</h3><span class="rule"></span><p>주기적으로 열리는<br>오얏꽃 이벤트 (통큰이벤트)</p><span class="pop-hint">이벤트 보기</span></div>
       </article>
     </div>
   </section>
 
   <section class="block" id="join">
     <div class="head"><h2>가입 조건</h2><span class="latin">before you join</span></div>
+    <div class="sec-lead">
+      <p class="lead-decline">N미새, 블리, 이중길드, 부계정, 철새, 노고인, 팜인, 서바인 <strong>정중히 거절합니다.</strong></p>
+    </div>
     <div class="terms">
       <article class="term panel">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-age"/></svg>
@@ -541,11 +555,21 @@
 
   <footer><span class="latin">Oyatkkot</span> · 오얏꽃 길드 · 테일즈런너</footer>
 </div>
+<div class="skill-pop" id="eventPop" hidden role="dialog" aria-label="길드 이벤트">
+  <div class="pop-card single square">
+    <p class="pop-title">길드 이벤트</p>
+    <div class="pop-imgs">
+      <img src="guild-event.png" alt="지난 길드 이벤트 모음: 카카오톡 랜덤 선물게임과 퀴즈 선물게임" width="1000" height="1000">
+    </div>
+    <p class="pop-caption">길드원 내전 or 오얏꽃 길드 내 이벤트 등</p>
+    <button class="pop-close" type="button">닫기</button>
+  </div>
+</div>
 <div class="skill-pop" id="votePop" hidden role="dialog" aria-label="점령전 투표">
   <div class="pop-card single">
     <p class="pop-title">점령전 투표</p>
     <div class="pop-imgs">
-      <img src="war-vote.png" alt="점령전 참여 조사 투표 예시: 앞탐, 뒷탐, 대타 중 선택" width="358" height="186">
+      <img src="war-vote.png" alt="10/17일 점령전 투표 예시: 앞타임(19:00~20:25), 뒷타임(20:30~22:00), 불참 중 선택" width="349" height="392">
     </div>
     <button class="pop-close" type="button">닫기</button>
   </div>
@@ -557,6 +581,7 @@
       <img src="guild-skill-1.png" alt="길드 스킬 - 달리기 트리" width="720" height="555">
       <img src="guild-skill-2.png" alt="길드 스킬 - 협동 트리" width="720" height="555">
     </div>
+    <p class="pop-caption">이벤트에 따라 유동적으로 스킬변경</p>
     <button class="pop-close" type="button">닫기</button>
   </div>
 </div>
