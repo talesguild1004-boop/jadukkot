@@ -275,6 +275,12 @@
   /* single-image popup (점령전 투표): narrower card, one column */
   .skill-pop .pop-card.single { width: min(420px, 100%); }
   .skill-pop .pop-card.single.square { width: min(640px, 100%); }
+  /* three screenshots, all the same size in one row (stacked on phones) */
+  .pop-imgs.trio { grid-template-columns: repeat(3, 1fr); }
+  .skill-pop .pop-card:has(.trio) { width: min(980px, 100%); }
+  /* caption used as a subtitle right under the popup title */
+  .pop-caption.pop-sub { margin: -4px 0 14px; }
+  @media (max-width: 760px) { .pop-imgs.trio { grid-template-columns: 1fr; } }
   .pop-caption { margin: 12px 0 0; text-align: center; font-size: 15px; color: #F4D58E; }
   .pop-card.single .pop-imgs { grid-template-columns: 1fr; }
 
@@ -506,9 +512,9 @@
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-battle"/></svg>
         <div><h3>점령전</h3><span class="rule"></span><p>누구든지 투표 후<br>자유롭게 참여 가능</p><span class="pop-hint">투표</span></div>
       </article>
-      <article class="term panel">
+      <article class="term panel has-pop" id="mapCard" tabindex="0" aria-controls="mapPop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-map"/></svg>
-        <div><h3>주맵</h3><span class="rule"></span><p>종랜 &amp; 하드코어</p></div>
+        <div><h3>주맵</h3><span class="rule"></span><p>종랜 &amp; 하드코어</p><span class="pop-hint">주맵 보기</span></div>
       </article>
       <article class="term panel has-pop" id="eventCard" tabindex="0" aria-controls="eventPop" aria-expanded="false">
         <svg class="ic" viewBox="0 0 120 120" aria-hidden="true"><use href="#ic-event"/></svg>
@@ -555,6 +561,18 @@
 
   <footer><span class="latin">Oyatkkot</span> · 오얏꽃 길드 · 테일즈런너</footer>
 </div>
+<div class="skill-pop" id="mapPop" hidden role="dialog" aria-label="주맵">
+  <div class="pop-card">
+    <p class="pop-title">주맵</p>
+    <div class="pop-imgs trio">
+      <img src="main-map-1.webp" alt="길드원들이 함께 대기 중인 하드코어 맵 화면" width="1054" height="664">
+      <img src="main-map-2.webp" alt="길드원 레드팀과 블루팀으로 나뉜 종랜 대기 화면" width="1054" height="664">
+      <img src="main-map-3.webp" alt="길드원 팀전 대기 화면" width="1054" height="664">
+    </div>
+    <p class="pop-caption">이벤트 기간에는 이벤트도 같이!</p>
+    <button class="pop-close" type="button">닫기</button>
+  </div>
+</div>
 <div class="skill-pop" id="eventPop" hidden role="dialog" aria-label="길드 이벤트">
   <div class="pop-card single square">
     <p class="pop-title">길드 이벤트</p>
@@ -569,7 +587,7 @@
   <div class="pop-card single">
     <p class="pop-title">점령전 투표</p>
     <div class="pop-imgs">
-      <img src="war-vote.png" alt="10/17일 점령전 투표 예시: 앞타임(19:00~20:25), 뒷타임(20:30~22:00), 불참 중 선택" width="349" height="392">
+      <img src="war-vote.png?v=1017" alt="10/17일 점령전 투표 예시: 앞타임(19:00~20:25), 뒷타임(20:30~22:00), 불참 중 선택" width="349" height="392">
     </div>
     <button class="pop-close" type="button">닫기</button>
   </div>
